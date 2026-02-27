@@ -307,6 +307,28 @@ export default function ChatSupport() {
               </p>
             </div>
           </div>
+          <Button
+            onClick={handleMarkAsResolved}
+            disabled={ticketStatus === "closed"}
+            className={cn(
+              "font-semibold transition-all duration-200 min-w-[160px]",
+              ticketStatus === "closed"
+                ? "bg-gray-200 text-gray-600 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700 text-white"
+            )}
+          >
+            {ticketStatus === "closed" ? (
+              <>
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Resolved
+              </>
+            ) : (
+              <>
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Mark as Resolved
+              </>
+            )}
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -454,31 +476,6 @@ export default function ChatSupport() {
                     </div>
                   </div>
                 )}
-
-                <hr className="border-gray-200" />
-
-                <Button
-                  onClick={handleMarkAsResolved}
-                  disabled={ticket.status === "closed"}
-                  className={cn(
-                    "w-full font-semibold transition-all duration-200",
-                    ticket.status === "closed"
-                      ? "bg-gray-200 text-gray-600 cursor-not-allowed"
-                      : "bg-green-600 hover:bg-green-700 text-white"
-                  )}
-                >
-                  {ticket.status === "closed" ? (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Resolved
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Mark as Resolved
-                    </>
-                  )}
-                </Button>
               </CardContent>
             </Card>
           </div>
