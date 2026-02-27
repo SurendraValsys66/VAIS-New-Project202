@@ -820,27 +820,31 @@ export default function Support() {
                           {formatDate(ticket.updatedAt)}
                         </TableCell>
                         <TableCell>
-                          <Button
-                            onClick={() =>
-                              navigate(`/chat-support/${ticket.id}`)
-                            }
-                            className="flex items-center gap-3 px-4 py-2 h-auto rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 text-blue-900 border border-blue-200 transition-all duration-200 w-full justify-center"
-                          >
-                            <div className="flex flex-col items-center gap-0.5">
-                              <MessageCircle className="w-4 h-4 text-blue-600" />
-                              <span className="text-xs font-medium">
-                                Chat
-                              </span>
-                            </div>
-                            <div className="flex flex-col items-start">
-                              <span className="text-sm font-bold text-blue-900">
+                          <div className="flex items-center gap-2">
+                            <Button
+                              onClick={() =>
+                                navigate(`/chat-support/${ticket.id}`)
+                              }
+                              variant="ghost"
+                              size="sm"
+                              className="relative h-10 w-10 rounded-full bg-valasys-orange/10 hover:bg-valasys-orange/20 text-valasys-orange transition-colors duration-200"
+                            >
+                              <MessageCircle className="w-5 h-5" />
+                              {ticket.chatCount && ticket.chatCount > 0 && (
+                                <span className="absolute -top-1 -right-1 flex items-center justify-center h-5 w-5 bg-valasys-orange text-white text-xs font-bold rounded-full border-2 border-white">
+                                  {ticket.chatCount > 99 ? "99+" : ticket.chatCount}
+                                </span>
+                              )}
+                            </Button>
+                            <div className="flex flex-col">
+                              <span className="text-xs font-semibold text-gray-900">
                                 {ticket.chatCount || 0}
                               </span>
-                              <span className="text-xs text-blue-700">
+                              <span className="text-xs text-gray-500">
                                 message{ticket.chatCount !== 1 ? "s" : ""}
                               </span>
                             </div>
-                          </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
