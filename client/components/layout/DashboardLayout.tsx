@@ -1187,6 +1187,29 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
                       <DropdownMenuSeparator />
 
+                      <div className="p-1">
+                        <DropdownMenuItem
+                          asChild
+                          className="cursor-pointer items-start gap-3 py-3"
+                        >
+                          <Link
+                            to="/contact-sales"
+                            state={{ source: "profile" }}
+                            className="flex items-start gap-3 w-full"
+                          >
+                            <MessageCircle className="mt-0.5 h-4 w-4 text-valasys-orange" />
+                            <div>
+                              <div className="font-medium">Get support</div>
+                              <div className="text-xs text-gray-500">
+                                Contact our support team
+                              </div>
+                            </div>
+                          </Link>
+                        </DropdownMenuItem>
+                      </div>
+
+                      <DropdownMenuSeparator />
+
                       <DropdownMenuItem className="cursor-pointer text-red-600 items-start gap-3 py-3">
                         <LogOut className="h-4 w-4" />
                         <div>
