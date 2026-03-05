@@ -88,32 +88,33 @@ const CompanyDetail: React.FC = () => {
         {/* Header */}
         <div className="bg-white border-b sticky top-0 z-10">
           <div className="px-6 py-3">
-            {/* Single Line Header with all info */}
-            <div className="flex items-center justify-between gap-4">
+            {/* Header with stacked layout */}
+            <div className="flex items-start justify-between gap-6">
               {/* Left: Prospect Info */}
-              <div className="flex items-center gap-3 flex-1">
+              <div className="flex items-center gap-3 flex-shrink-0">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex-shrink-0 flex items-center justify-center">
                   <span className="text-white text-sm font-bold">KB</span>
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0">
                   <p className="text-sm font-semibold text-gray-900">{prospect.fullName}</p>
                   <p className="text-xs text-gray-600">{prospect.jobTitle}</p>
                 </div>
               </div>
 
-              {/* Center: Company Info */}
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <div className="w-6 h-6 bg-cyan-500 rounded flex items-center justify-center flex-shrink-0">
-                  <div className="grid grid-cols-2 gap-0.5 p-0.5">
-                    <div className="w-1 h-1 bg-white rounded-sm"></div>
-                    <div className="w-1 h-1 bg-white rounded-sm"></div>
-                    <div className="w-1 h-1 bg-white rounded-sm"></div>
-                    <div className="w-1 h-1 bg-white rounded-sm"></div>
-                  </div>
-                </div>
+              {/* Center: Company Info (Stacked) */}
+              <div className="flex-1 flex flex-col gap-2 text-xs">
+                {/* Company Logo and Links */}
                 <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-cyan-500 rounded flex items-center justify-center flex-shrink-0">
+                    <div className="grid grid-cols-2 gap-0.5 p-0.5">
+                      <div className="w-1 h-1 bg-white rounded-sm"></div>
+                      <div className="w-1 h-1 bg-white rounded-sm"></div>
+                      <div className="w-1 h-1 bg-white rounded-sm"></div>
+                      <div className="w-1 h-1 bg-white rounded-sm"></div>
+                    </div>
+                  </div>
                   <p className="text-sm font-medium text-gray-900">{prospect.companyName}</p>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 ml-1">
                     <button className="text-gray-400 hover:text-gray-600">
                       <Globe className="w-3.5 h-3.5" />
                     </button>
@@ -125,10 +126,24 @@ const CompanyDetail: React.FC = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* Website */}
+                <div>
+                  <p className="text-gray-600">Website</p>
+                  <a href="https://conway.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-xs">
+                    www.conway.com
+                  </a>
+                </div>
+
+                {/* Industry */}
+                <div>
+                  <p className="text-gray-600">Industry</p>
+                  <p className="font-medium text-gray-900">{prospect.industry}</p>
+                </div>
               </div>
 
-              {/* Right: Company Details */}
-              <div className="flex items-center gap-6 text-xs flex-shrink-0">
+              {/* Right: Employees and Revenue (Stacked) */}
+              <div className="flex flex-col gap-3 text-xs flex-shrink-0">
                 <div>
                   <p className="text-gray-600">Employees</p>
                   <p className="font-medium text-gray-900">{prospect.companySize}</p>
@@ -136,16 +151,6 @@ const CompanyDetail: React.FC = () => {
                 <div>
                   <p className="text-gray-600">Revenue</p>
                   <p className="font-medium text-gray-900">{prospect.revenue}</p>
-                </div>
-                <div>
-                  <p className="text-gray-600">Website</p>
-                  <a href="https://conway.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium">
-                    www.conway.com
-                  </a>
-                </div>
-                <div>
-                  <p className="text-gray-600">Industry</p>
-                  <p className="font-medium text-gray-900">{prospect.industry}</p>
                 </div>
               </div>
             </div>
