@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Mail,
   Phone,
@@ -13,6 +14,7 @@ import {
   DollarSign,
   Globe,
   ChevronDown,
+  Twitter,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -129,6 +131,12 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
   onMoreOptions,
   maskEmail = defaultMaskEmail,
 }) => {
+  const navigate = useNavigate();
+
+  const handleExternalLink = () => {
+    navigate(`/company/${prospect.id}`);
+  };
+
   return (
     <div className="h-full flex flex-col bg-gray-50">
       {/* Header */}
@@ -139,7 +147,7 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
             variant="ghost"
             size="sm"
             className="h-5 w-5 p-0"
-            onClick={onMoreOptions}
+            onClick={handleExternalLink}
           >
             <ExternalLink className="w-3.5 h-3.5 text-gray-400" />
           </Button>
@@ -159,9 +167,22 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 text-sm">
-                {prospect.fullName}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-gray-900 text-sm">
+                  {prospect.fullName}
+                </h3>
+                {prospect.linkedinUrl && (
+                  <a
+                    href={prospect.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-700 transition flex-shrink-0"
+                    aria-label="LinkedIn Profile"
+                  >
+                    <Linkedin className="w-3.5 h-3.5" />
+                  </a>
+                )}
+              </div>
               <p className="text-xs text-gray-600">
                 {prospect.jobTitle}
               </p>
@@ -224,13 +245,28 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
                     label="M"
                   />
                 )}
-                {prospect.linkedinUrl && (
-                  <ContactItem
-                    value="LinkedIn Profile"
-                    isLink={true}
-                    href={prospect.linkedinUrl}
-                  />
-                )}
+                {/* Social Links with Icons */}
+                <div className="flex gap-3 mt-2">
+                  {prospect.linkedinUrl && (
+                    <a
+                      href={prospect.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700 transition"
+                      aria-label="LinkedIn Profile"
+                    >
+                      <Linkedin className="w-4 h-4" />
+                    </a>
+                  )}
+                  {/* Twitter Icon (placeholder - no URL yet) */}
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-gray-500 transition cursor-not-allowed"
+                    aria-label="Twitter Profile"
+                  >
+                    <Twitter className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -300,7 +336,7 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Briefcase className="w-4 h-4 text-gray-600" />
-                <p className="text-xs text-gray-600 font-semibold">Description</p>
+                <p className="text-xs text-gray-500 font-semibold uppercase">Description</p>
               </div>
               <p className="text-sm text-gray-700 ml-6">
                 {prospect.companyName} Health Solutions, founded in 2001 and headquartered in Fort Lauderdale, Florida...
@@ -315,7 +351,7 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <MapPin className="w-4 h-4 text-gray-600" />
-                  <p className="text-xs text-gray-600 font-semibold">HQ Location</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase">HQ Location</p>
                 </div>
                 <div className="flex items-start justify-between gap-2 ml-6">
                   <p className="text-sm text-gray-700">
@@ -331,7 +367,7 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="w-4 h-4 text-gray-600" />
-                  <p className="text-xs text-gray-600 font-semibold">Employees</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase">Employees</p>
                 </div>
                 <p className="text-sm text-blue-600 font-medium ml-6">{prospect.companySize}</p>
               </div>
@@ -342,7 +378,7 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <DollarSign className="w-4 h-4 text-gray-600" />
-                  <p className="text-xs text-gray-600 font-semibold">Revenue</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase">Revenue</p>
                 </div>
                 <p className="text-sm text-gray-900 font-medium ml-6">{prospect.revenue}</p>
               </div>
@@ -353,7 +389,7 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Briefcase className="w-4 h-4 text-gray-600" />
-                  <p className="text-xs text-gray-600 font-semibold">Industry</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase">Industry</p>
                 </div>
                 <div className="ml-6 space-y-1">
                   <p className="text-xs text-gray-600">Primary Industries</p>
@@ -368,7 +404,7 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Globe className="w-4 h-4 text-gray-600" />
-                <p className="text-xs text-gray-600 font-semibold">Technologies</p>
+                <p className="text-xs text-gray-500 font-semibold uppercase">Technologies</p>
               </div>
               <div className="ml-6 space-y-1">
                 <p className="text-sm text-gray-700">
@@ -385,7 +421,7 @@ export const QuickViewPanel: React.FC<QuickViewPanelProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Phone className="w-4 h-4 text-gray-600" />
-                  <p className="text-xs text-gray-600 font-semibold">HQ Phone</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase">HQ Phone</p>
                 </div>
                 <a
                   href={`tel:${prospect.phone}`}

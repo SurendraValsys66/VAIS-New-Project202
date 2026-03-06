@@ -16,6 +16,17 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+import {
   BarChart,
   Bar,
   XAxis,
@@ -271,6 +282,29 @@ export default function CampaignOverview() {
   const [deliverablePeriod, setDeliverablePeriod] = useState<
     "monthly" | "quarterly"
   >("monthly");
+
+  // Campaign acceptance state
+  const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+  const [selectedLeads, setSelectedLeads] = useState<{
+    cs: boolean;
+    mql: boolean;
+    hql: boolean;
+    bantVpi: boolean;
+    webinar: boolean;
+  }>({
+    cs: false,
+    mql: false,
+    hql: false,
+    bantVpi: false,
+    webinar: false,
+  });
+  const [campaignCounts, setCampaignCounts] = useState({
+    cs: 150,
+    mql: 120,
+    hql: 90,
+    bantVpi: 60,
+    webinar: 45,
+  });
   const geoTableLocations = [
     "INDIA",
     "SINGAPORE",
@@ -357,6 +391,39 @@ export default function CampaignOverview() {
 
   const handleBackToCampaigns = () => {
     navigate("/build-my-campaign?tab=requests");
+  };
+
+  const handleAcceptCampaign = () => {
+    // Here you would typically call an API to accept the campaign with the counts
+    console.log("Campaign accepted with counts:", campaignCounts);
+    setIsAcceptModalOpen(false);
+    toast.success("Campaign accepted successfully!", {
+      description: `CS: ${campaignCounts.cs}, MQL: ${campaignCounts.mql}, HQL: ${campaignCounts.hql}, BANT+VPI: ${campaignCounts.bantVpi}, Webinar: ${campaignCounts.webinar}`,
+    });
+  };
+
+  const handleDeclineCampaign = () => {
+    // Here you would typically call an API to decline the campaign
+    console.log("Campaign declined");
+    toast.error("Campaign declined", {
+      description: "You declined to accept this campaign.",
+    });
+    navigate("/build-my-campaign?tab=requests");
+  };
+
+  const handleCountChange = (field: keyof typeof campaignCounts, value: string) => {
+    const numValue = parseInt(value, 10) || 0;
+    setCampaignCounts((prev) => ({
+      ...prev,
+      [field]: Math.max(0, numValue),
+    }));
+  };
+
+  const toggleLeadSelection = (field: keyof typeof selectedLeads) => {
+    setSelectedLeads((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
   };
 
   const deliverableGeoData =
@@ -1224,12 +1291,276 @@ export default function CampaignOverview() {
                 Note: This campaign is already {campaignData.status}.
               </p>
             </div>
-            <Button className="bg-valasys-orange hover:bg-valasys-orange/90 rounded-full h-8 px-4 text-sm">
-              <Target className="w-4 h-4 mr-2" />
-              Track My Campaign
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 px-4 text-sm text-red-600 hover:bg-red-50"
+                onClick={handleDeclineCampaign}
+              >
+                Decline
+              </Button>
+              <Button
+                size="sm"
+                className="bg-green-600 hover:bg-green-700 h-8 px-4 text-sm"
+                onClick={() => setIsAcceptModalOpen(true)}
+              >
+                Accept
+              </Button>
+              <Button className="bg-valasys-orange hover:bg-valasys-orange/90 rounded-full h-8 px-4 text-sm">
+                <Target className="w-4 h-4 mr-2" />
+                Track My Campaign
+              </Button>
+            </div>
           </div>
         </div>
+
+        {/* Accept Campaign Modal */}
+        <Dialog open={isAcceptModalOpen} onOpenChange={setIsAcceptModalOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">Accept Campaign</DialogTitle>
+              <DialogDescription>
+                Select the lead types and set your target counts for this campaign.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="py-4">
+              {/* Lead Cards Grid */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                {/* CS Card */}
+                <div
+                  className={cn(
+                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                    selectedLeads.cs
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-200 bg-white hover:border-gray-300"
+                  )}
+                  onClick={() => toggleLeadSelection("cs")}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 flex-1">
+                      <Checkbox
+                        checked={selectedLeads.cs}
+                        onCheckedChange={() => toggleLeadSelection("cs")}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-sm">
+                          CS
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-0.5">Contact Strings</p>
+                      </div>
+                    </div>
+                    <div className="text-2xl font-bold text-blue-600">
+                      {campaignCounts.cs}
+                    </div>
+                  </div>
+                  {selectedLeads.cs && (
+                    <div className="mt-3">
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="Enter your count"
+                        value={campaignCounts.cs}
+                        onChange={(e) => handleCountChange("cs", e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="border-blue-300 bg-white text-sm"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* MQL Card */}
+                <div
+                  className={cn(
+                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                    selectedLeads.mql
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-200 bg-white hover:border-gray-300"
+                  )}
+                  onClick={() => toggleLeadSelection("mql")}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 flex-1">
+                      <Checkbox
+                        checked={selectedLeads.mql}
+                        onCheckedChange={() => toggleLeadSelection("mql")}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-sm">
+                          MQL
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-0.5">Marketing Qualified</p>
+                      </div>
+                    </div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {campaignCounts.mql}
+                    </div>
+                  </div>
+                  {selectedLeads.mql && (
+                    <div className="mt-3">
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="Enter your count"
+                        value={campaignCounts.mql}
+                        onChange={(e) => handleCountChange("mql", e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="border-green-300 bg-white text-sm"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* HQL Card */}
+                <div
+                  className={cn(
+                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                    selectedLeads.hql
+                      ? "border-purple-500 bg-purple-50"
+                      : "border-gray-200 bg-white hover:border-gray-300"
+                  )}
+                  onClick={() => toggleLeadSelection("hql")}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 flex-1">
+                      <Checkbox
+                        checked={selectedLeads.hql}
+                        onCheckedChange={() => toggleLeadSelection("hql")}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-sm">
+                          HQL
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-0.5">Highly Qualified</p>
+                      </div>
+                    </div>
+                    <div className="text-2xl font-bold text-purple-600">
+                      {campaignCounts.hql}
+                    </div>
+                  </div>
+                  {selectedLeads.hql && (
+                    <div className="mt-3">
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="Enter your count"
+                        value={campaignCounts.hql}
+                        onChange={(e) => handleCountChange("hql", e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="border-purple-300 bg-white text-sm"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* BANT + VPI Card */}
+                <div
+                  className={cn(
+                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                    selectedLeads.bantVpi
+                      ? "border-amber-500 bg-amber-50"
+                      : "border-gray-200 bg-white hover:border-gray-300"
+                  )}
+                  onClick={() => toggleLeadSelection("bantVpi")}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 flex-1">
+                      <Checkbox
+                        checked={selectedLeads.bantVpi}
+                        onCheckedChange={() => toggleLeadSelection("bantVpi")}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-sm">
+                          BANT+VPI
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-0.5">High Intent</p>
+                      </div>
+                    </div>
+                    <div className="text-2xl font-bold text-amber-600">
+                      {campaignCounts.bantVpi}
+                    </div>
+                  </div>
+                  {selectedLeads.bantVpi && (
+                    <div className="mt-3">
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="Enter your count"
+                        value={campaignCounts.bantVpi}
+                        onChange={(e) => handleCountChange("bantVpi", e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="border-amber-300 bg-white text-sm"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Webinar Card */}
+                <div
+                  className={cn(
+                    "p-4 rounded-lg border-2 cursor-pointer transition-all col-span-2 sm:col-span-1",
+                    selectedLeads.webinar
+                      ? "border-pink-500 bg-pink-50"
+                      : "border-gray-200 bg-white hover:border-gray-300"
+                  )}
+                  onClick={() => toggleLeadSelection("webinar")}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 flex-1">
+                      <Checkbox
+                        checked={selectedLeads.webinar}
+                        onCheckedChange={() => toggleLeadSelection("webinar")}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-sm">
+                          Webinar
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-0.5">Attendees</p>
+                      </div>
+                    </div>
+                    <div className="text-2xl font-bold text-pink-600">
+                      {campaignCounts.webinar}
+                    </div>
+                  </div>
+                  {selectedLeads.webinar && (
+                    <div className="mt-3">
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="Enter your count"
+                        value={campaignCounts.webinar}
+                        onChange={(e) => handleCountChange("webinar", e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="border-pink-300 bg-white text-sm"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsAcceptModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-green-600 hover:bg-green-700"
+                onClick={handleAcceptCampaign}
+              >
+                Confirm & Accept
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

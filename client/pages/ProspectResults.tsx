@@ -1714,7 +1714,7 @@ export default function ProspectResults() {
                                     </SheetTrigger>
                                     <SheetContent
                                       side="right"
-                                      className="sm:max-w-sm md:max-w-md lg:max-w-lg w-[90vw] p-0"
+                                      className="w-[25rem] p-0"
                                     >
                                       <QuickViewPanel
                                         prospect={prospect}

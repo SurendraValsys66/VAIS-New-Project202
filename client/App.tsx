@@ -51,6 +51,7 @@ import ContactSales from "./pages/ContactSales";
 import Maintenance from "./pages/Maintenance";
 import Templates from "./pages/Templates";
 import LandingPages from "./pages/LandingPages";
+import CompanyDetail from "./pages/CompanyDetail";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ const App = () => (
                   path="/favorites-prospects"
                   element={<FavoritesProspects />}
                 />
+                <Route path="/company/:companyId" element={<CompanyDetail />} />
                 <Route path="/build-campaign" element={<BuildCampaign />} />
                 <Route
                   path="/build-my-campaign"
