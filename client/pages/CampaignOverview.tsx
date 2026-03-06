@@ -1317,7 +1317,7 @@ export default function CampaignOverview() {
 
         {/* Accept Campaign Modal */}
         <Dialog open={isAcceptModalOpen} onOpenChange={setIsAcceptModalOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="sm:max-w-[30%]">
             <DialogHeader>
               <DialogTitle className="text-2xl">Accept Campaign</DialogTitle>
               <DialogDescription>
@@ -1353,7 +1353,7 @@ export default function CampaignOverview() {
                         <p className="text-xs text-gray-600 mt-0.5">Contact Strings</p>
                       </div>
                     </div>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-xl font-bold text-blue-600">
                       {campaignCounts.cs}
                     </div>
                   </div>
@@ -1397,7 +1397,7 @@ export default function CampaignOverview() {
                         <p className="text-xs text-gray-600 mt-0.5">Marketing Qualified</p>
                       </div>
                     </div>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-xl font-bold text-green-600">
                       {campaignCounts.mql}
                     </div>
                   </div>
@@ -1441,7 +1441,7 @@ export default function CampaignOverview() {
                         <p className="text-xs text-gray-600 mt-0.5">Highly Qualified</p>
                       </div>
                     </div>
-                    <div className="text-2xl font-bold text-purple-600">
+                    <div className="text-xl font-bold text-purple-600">
                       {campaignCounts.hql}
                     </div>
                   </div>
@@ -1485,7 +1485,7 @@ export default function CampaignOverview() {
                         <p className="text-xs text-gray-600 mt-0.5">High Intent</p>
                       </div>
                     </div>
-                    <div className="text-2xl font-bold text-amber-600">
+                    <div className="text-xl font-bold text-amber-600">
                       {campaignCounts.bantVpi}
                     </div>
                   </div>
@@ -1529,7 +1529,7 @@ export default function CampaignOverview() {
                         <p className="text-xs text-gray-600 mt-0.5">Attendees</p>
                       </div>
                     </div>
-                    <div className="text-2xl font-bold text-pink-600">
+                    <div className="text-xl font-bold text-pink-600">
                       {campaignCounts.webinar}
                     </div>
                   </div>
