@@ -1424,7 +1424,7 @@ export default function CampaignRequestForm() {
             {/* Divider */}
             <div className="border-t border-gray-200"></div>
 
-            {/* Live Campaign Deliverables Section */}
+            {/* Campaign Deliverables Section */}
             <div className="bg-orange-50 rounded-lg p-6 border border-orange-100">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
@@ -1434,10 +1434,14 @@ export default function CampaignRequestForm() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-base font-semibold text-gray-900 mb-1">
-                    Live Campaign Deliverables
+                    {campaignMode === "live"
+                      ? "Live Campaign Deliverables"
+                      : "TAL File Campaign Request"}
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    View live campaign deliverables and reach analytics in real-time.
+                    {campaignMode === "live"
+                      ? "View live campaign deliverables and reach analytics in real-time."
+                      : "Submit your TAL file and we'll prepare all deliverables for you."}
                   </p>
 
                   {campaignMode === "live" ? (
