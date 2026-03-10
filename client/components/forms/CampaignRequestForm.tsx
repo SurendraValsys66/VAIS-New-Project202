@@ -37,6 +37,7 @@ import {
   ChevronRight,
   ChevronDown,
   Mail,
+  Activity,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
