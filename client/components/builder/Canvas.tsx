@@ -223,13 +223,6 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ onBack, templateId
           </div>
         </div>
 
-        {/* Right Sidebar - Properties/Settings Panel */}
-        <div className="w-80 bg-white border-l border-gray-200 overflow-y-auto p-4">
-          <div className="text-sm text-gray-600 mb-4 font-semibold">Page Properties</div>
-          <div className="space-y-4 text-gray-500 text-xs">
-            <p>Select a component to edit its properties here.</p>
-          </div>
-        </div>
       </div>
     </div>
   );
