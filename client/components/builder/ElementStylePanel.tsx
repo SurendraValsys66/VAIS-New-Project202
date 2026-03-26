@@ -30,16 +30,15 @@ interface StyleState {
   borderWidth: string;
 }
 
-<<<<<<< ai_main_4b439789f712
 interface SpacingState {
   groupPadding: boolean;
   groupMargin: boolean;
-=======
+}
+
 interface SizingUnits {
   width: "%" | "px";
   height: "%" | "px";
   fontSize: "%" | "px";
->>>>>>> main
 }
 
 export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
@@ -66,16 +65,15 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
     borderWidth: "0",
   });
 
-<<<<<<< ai_main_4b439789f712
   const [spacing, setSpacing] = React.useState<SpacingState>({
     groupPadding: true,
     groupMargin: true,
-=======
+  });
+
   const [sizingUnits, setSizingUnits] = React.useState<SizingUnits>({
     width: "%",
     height: "px",
     fontSize: "px",
->>>>>>> main
   });
 
   const [expandedSections, setExpandedSections] = React.useState({
@@ -140,34 +138,11 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
         updates[key] = isNaN(Number(value)) ? value : Number(value);
       }
 
-<<<<<<< ai_main_4b439789f712
-  const handleGroupPaddingToggle = () => {
-    setSpacing((prev) => ({
-      ...prev,
-      groupPadding: !prev.groupPadding,
-    }));
-  };
-
-  const handleGroupMarginToggle = () => {
-    setSpacing((prev) => ({
-      ...prev,
-      groupMargin: !prev.groupMargin,
-    }));
-  };
-
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }));
-  };
-=======
       // Store in pending updates
       pendingUpdatesRef.current = {
         ...pendingUpdatesRef.current,
         ...updates,
       };
->>>>>>> main
 
       // Clear existing debounce timer
       if (debounceTimerRef.current) {
@@ -183,162 +158,20 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
     [onUpdate]
   );
 
-<<<<<<< ai_main_4b439789f712
-  const StyleInput = ({
-    label,
-    value,
-    onChange,
-    type = "text",
-    placeholder = "",
-    max = 999,
-    isPercentage = false,
-  }: {
-    label: string;
-    value: string;
-    onChange: (value: string) => void;
-    type?: string;
-    placeholder?: string;
-    max?: number;
-    isPercentage?: boolean;
-  }) => {
-    const inputRef = React.useRef<HTMLInputElement>(null);
-    const maxValue = isPercentage ? 100 : max;
-
-    const clampValue = (val: number): number => {
-      return Math.max(0, Math.min(val, maxValue));
-    };
-
-    const handleNumberChange = (newVal: string) => {
-      // Allow empty string for clearing
-      if (newVal === "") {
-        onChange("");
-        return;
-      }
-
-      const numVal = Number(newVal);
-      if (!isNaN(numVal)) {
-        const clamped = clampValue(numVal);
-        onChange(String(clamped));
-      }
-    };
-
-    const handleNumberKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (type !== "number") return;
-
-      // Prevent default for arrow keys to stop scrolling
-      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const currentValue = Number(value) || 0;
-        const increment = e.shiftKey ? 10 : 1;
-
-        let newValue = currentValue;
-        if (e.key === "ArrowUp") {
-          newValue = clampValue(currentValue + increment);
-        } else if (e.key === "ArrowDown") {
-          newValue = clampValue(currentValue - increment);
-        }
-
-        onChange(String(newValue));
-      }
-    };
-
-    const handleNumberFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-      if (type !== "number") return;
-      // Select all text when focused so you can start typing immediately
-      setTimeout(() => {
-        e.target.select();
-      }, 0);
-    };
-
-    const decrementValue = () => {
-      const current = Number(value) || 0;
-      const newVal = clampValue(current - 1);
-      onChange(String(newVal));
-    };
-
-    const incrementValue = () => {
-      const current = Number(value) || 0;
-      const newVal = clampValue(current + 1);
-      onChange(String(newVal));
-    };
-
-    return (
-      <div className={cn("space-y-2", label ? "px-4 py-3 border-b border-gray-100" : "flex items-center gap-2")}>
-        {label && <label className="text-xs font-bold text-gray-700">{label}</label>}
-        {type === "color" ? (
-          <div className="flex gap-2 items-center">
-            <input
-              type="color"
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-              className="w-12 h-10 rounded-lg border border-gray-200 cursor-pointer"
-            />
-            <input
-              type="text"
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
-            />
-          </div>
-        ) : (
-          <div className={cn("flex items-center gap-1", label ? "" : "flex-1")}>
-            {type === "number" && <span className="text-xs text-gray-600">▧</span>}
-            <Input
-              ref={inputRef}
-              type={type === "number" ? "text" : type}
-              inputMode={type === "number" ? "numeric" : undefined}
-              value={value}
-              onChange={(e) => {
-                if (type === "number") {
-                  handleNumberChange(e.target.value);
-                } else {
-                  onChange(e.target.value);
-                }
-              }}
-              onKeyDown={handleNumberKeyDown}
-              onFocus={handleNumberFocus}
-              placeholder={placeholder}
-              className={cn("h-8 text-sm", label ? "" : "flex-1")}
-            />
-            {type === "number" && (
-              <>
-                <span className="text-xs text-gray-500 whitespace-nowrap">
-                  {isPercentage ? "%" : "px"}
-                </span>
-                <div className="flex items-center gap-0">
-                  <button
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      decrementValue();
-                      inputRef.current?.focus();
-                    }}
-                    className="px-1.5 py-1 hover:bg-gray-200 active:bg-gray-300 rounded-l text-xs font-semibold transition-colors"
-                    title="Decrease (or use Down arrow)"
-                  >
-                    ▼
-                  </button>
-                  <button
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      incrementValue();
-                      inputRef.current?.focus();
-                    }}
-                    className="px-1.5 py-1 hover:bg-gray-200 active:bg-gray-300 rounded-r text-xs font-semibold transition-colors"
-                    title="Increase (or use Up arrow)"
-                  >
-                    ▲
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    );
+  const handleGroupPaddingToggle = () => {
+    setSpacing((prev) => ({
+      ...prev,
+      groupPadding: !prev.groupPadding,
+    }));
   };
-=======
+
+  const handleGroupMarginToggle = () => {
+    setSpacing((prev) => ({
+      ...prev,
+      groupMargin: !prev.groupMargin,
+    }));
+  };
+
   React.useEffect(() => {
     // Cleanup debounce timer on unmount
     return () => {
@@ -521,11 +354,10 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
       },
     []
   );
->>>>>>> main
 
   if (!component) {
     return (
-      <aside className="w-80 flex-shrink-0 h-full border-l border-gray-200 bg-white flex flex-col min-h-0">
+      <div className="flex flex-col h-full min-h-0">
         <div className="px-4 py-4 border-b border-gray-200 flex items-center justify-between">
           <h3 className="text-sm font-bold text-gray-700">Style Panel</h3>
           <Button
@@ -540,12 +372,12 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
         <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
           Select an element to edit
         </div>
-      </aside>
+      </div>
     );
   }
 
   return (
-    <aside className="w-80 flex-shrink-0 h-full border-l border-gray-200 bg-white flex flex-col overflow-hidden min-h-0">
+    <div className="flex flex-col h-full overflow-hidden min-h-0">
       {/* Header */}
       <div className="px-4 py-4 border-b border-gray-200 flex items-center justify-between">
         <div>
@@ -606,12 +438,7 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
                 unit={sizingUnits.width}
                 onUnitChange={(unit) => handleUnitChange("width", unit)}
                 placeholder="100"
-<<<<<<< ai_main_4b439789f712
-                max={100}
-                isPercentage={true}
-=======
                 property="width"
->>>>>>> main
               />
               <SizingInput
                 label="Height"
@@ -620,11 +447,7 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
                 unit={sizingUnits.height}
                 onUnitChange={(unit) => handleUnitChange("height", unit)}
                 placeholder="auto"
-<<<<<<< ai_main_4b439789f712
-                max={999}
-=======
                 property="height"
->>>>>>> main
               />
               <SizingInput
                 label="Font Size"
@@ -633,11 +456,7 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
                 unit={sizingUnits.fontSize}
                 onUnitChange={(unit) => handleUnitChange("fontSize", unit)}
                 placeholder="16"
-<<<<<<< ai_main_4b439789f712
-                max={999}
-=======
                 property="fontSize"
->>>>>>> main
               />
             </>
           )}
@@ -816,6 +635,6 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
           )}
         </div>
       </div>
-    </aside>
+    </div>
   );
 };

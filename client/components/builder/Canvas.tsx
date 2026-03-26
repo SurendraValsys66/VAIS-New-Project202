@@ -202,7 +202,7 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ onBack, templateId
       </div>
 
       {/* Main Content - Three Panel Layout */}
-      <div className="flex min-h-0 flex-1 overflow-hidden">
+      <div className="flex min-h-0 flex-1 overflow-hidden bg-gray-50">
         {/* Left Sidebar - Components Panel */}
         <div className="flex w-72 flex-shrink-0 flex-col overflow-y-auto border-r border-gray-200 bg-white">
           <ComponentsPanel />
@@ -257,15 +257,17 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ onBack, templateId
         </div>
 
         {/* Right Sidebar - Styling Panel */}
-        <ElementStylePanel
-          component={selectedComponent}
-          onUpdate={(updates) => {
-            if (selectedComponentId) {
-              updateComponent(selectedComponentId, updates);
-            }
-          }}
-          onClose={() => setSelectedComponentId(null)}
-        />
+        <div className="w-80 flex-shrink-0 border-l border-gray-200 bg-white flex flex-col h-full overflow-hidden">
+          <ElementStylePanel
+            component={selectedComponent}
+            onUpdate={(updates) => {
+              if (selectedComponentId) {
+                updateComponent(selectedComponentId, updates);
+              }
+            }}
+            onClose={() => setSelectedComponentId(null)}
+          />
+        </div>
       </div>
     </div>
   );
