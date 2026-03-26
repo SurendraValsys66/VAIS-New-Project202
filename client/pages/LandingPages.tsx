@@ -8,12 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Layers, Plus, Trash2, Edit2, Layout, Calendar, Search, Zap, Sparkles } from "lucide-react";
+import { Layers, Plus, Trash2, Edit2, Layout, Calendar, Search, Zap, Sparkles, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { PREDEFINED_TEMPLATES, OnlineMarketingConferenceTemplate } from "@/components/predefine-email-templates";
 import { BuilderComponent } from "@/types/builder";
+import { StylePanel } from "@/components/landing-pages/StylePanel";
 
 type View = "list" | "editor" | "template-preview" | "template-list" | "ai-builder";
 
@@ -30,6 +31,7 @@ export default function LandingPages() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [templateInEditor, setTemplateInEditor] = useState<string | null>(null);
   const [aiGeneratedLayout, setAIGeneratedLayout] = useState<BuilderComponent[] | null>(null);
+  const [showStylePanel, setShowStylePanel] = useState(false);
   const [pages, setPages] = useState<PageData[]>([
     { id: "1", name: "Modern Hero Page", updatedAt: "2024-03-20T10:00:00Z" },
     { id: "2", name: "SaaS Product Landing", updatedAt: "2024-03-19T15:30:00Z" },
@@ -214,7 +216,10 @@ export default function LandingPages() {
   // Default List View
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="flex h-full gap-0">
+        {/* Main Content */}
+        <div className="flex-1 overflow-auto">
+          <div className="space-y-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
@@ -225,29 +230,45 @@ export default function LandingPages() {
             </h1>
             <p className="text-gray-500 mt-1">Design, build and publish high-converting pages in minutes.</p>
           </div>
-          <div className="flex gap-3 flex-wrap justify-end">
-            <Button
-              onClick={handleOpenAIBuilder}
-              className="px-6 py-6 rounded-2xl shadow-md hover:shadow-lg transition-all font-bold text-base group bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-            >
-              <Sparkles className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-              AI Builder
-            </Button>
-            <Button
-              onClick={handleViewTemplates}
-              variant="outline"
-              className="px-6 py-6 rounded-2xl shadow-md hover:shadow-lg transition-all font-bold text-base group border-2 border-valasys-orange text-valasys-orange hover:bg-valasys-orange/5"
-            >
-              <Zap className="w-5 h-5 mr-2" />
-              View Templates
-            </Button>
-            <Button
-              onClick={handleCreateNew}
-              className="bg-valasys-orange hover:bg-valasys-orange/90 text-white px-6 py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all font-bold text-base group"
-            >
-              <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              Create New Page
-            </Button>
+          <div className="flex gap-3 flex-wrap justify-between items-center">
+            <div></div>
+            <div className="flex gap-3 flex-wrap justify-end">
+              <Button
+                onClick={handleOpenAIBuilder}
+                className="px-6 py-6 rounded-2xl shadow-md hover:shadow-lg transition-all font-bold text-base group bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+              >
+                <Sparkles className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                AI Builder
+              </Button>
+              <Button
+                onClick={handleViewTemplates}
+                variant="outline"
+                className="px-6 py-6 rounded-2xl shadow-md hover:shadow-lg transition-all font-bold text-base group border-2 border-valasys-orange text-valasys-orange hover:bg-valasys-orange/5"
+              >
+                <Zap className="w-5 h-5 mr-2" />
+                View Templates
+              </Button>
+              <Button
+                onClick={handleCreateNew}
+                className="bg-valasys-orange hover:bg-valasys-orange/90 text-white px-6 py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all font-bold text-base group"
+              >
+                <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+                Create New Page
+              </Button>
+              <Button
+                onClick={() => setShowStylePanel(!showStylePanel)}
+                variant={showStylePanel ? "default" : "outline"}
+                className={cn(
+                  "px-6 py-6 rounded-2xl shadow-md hover:shadow-lg transition-all font-bold text-base",
+                  showStylePanel
+                    ? "bg-valasys-orange hover:bg-valasys-orange/90 text-white"
+                    : "border-2 border-gray-300 text-gray-600 hover:bg-gray-50"
+                )}
+                title="Toggle styling panel"
+              >
+                <Palette className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -332,6 +353,11 @@ export default function LandingPages() {
             </div>
           </button>
         </div>
+      </div>
+        </div>
+
+        {/* Styling Panel */}
+        {showStylePanel && <StylePanel onClose={() => setShowStylePanel(false)} />}
       </div>
     </DashboardLayout>
   );
