@@ -146,8 +146,8 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
       {/* Block Content */}
       <div className="relative">{getBlockPreview(block)}</div>
 
-      {/* Resize Handles */}
-      {isSelected && (
+      {/* Resize Handles - Only show when selected and not dragging */}
+      {isSelected && !isDragging && (
         <div className="absolute inset-0 pointer-events-none">
           {resizeHandles.map((handle) => (
             <div

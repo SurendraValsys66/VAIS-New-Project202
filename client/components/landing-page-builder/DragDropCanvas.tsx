@@ -63,8 +63,8 @@ export const DragDropCanvas: React.FC<DragDropCanvasProps> = ({
     return (
       <div
         ref={dropRef}
-        className={`w-full bg-white rounded-lg shadow-md px-8 py-6 border-4 border-dashed transition-colors flex flex-col items-center justify-center min-h-20 ${
-          isOver ? "border-valasys-orange bg-orange-50" : "border-gray-300"
+        className={`w-full bg-white rounded-lg shadow-md px-8 py-6 border-2 transition-colors flex flex-col items-center justify-center min-h-20 ${
+          isOver ? "border-valasys-orange bg-orange-50" : "border-gray-200"
         }`}
       >
         <p className="text-gray-500 text-center text-sm">
