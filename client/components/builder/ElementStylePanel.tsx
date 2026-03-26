@@ -30,9 +30,16 @@ interface StyleState {
   borderWidth: string;
 }
 
+<<<<<<< ai_main_4b439789f712
 interface SpacingState {
   groupPadding: boolean;
   groupMargin: boolean;
+=======
+interface SizingUnits {
+  width: "%" | "px";
+  height: "%" | "px";
+  fontSize: "%" | "px";
+>>>>>>> main
 }
 
 export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
@@ -59,9 +66,16 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
     borderWidth: "0",
   });
 
+<<<<<<< ai_main_4b439789f712
   const [spacing, setSpacing] = React.useState<SpacingState>({
     groupPadding: true,
     groupMargin: true,
+=======
+  const [sizingUnits, setSizingUnits] = React.useState<SizingUnits>({
+    width: "%",
+    height: "px",
+    fontSize: "px",
+>>>>>>> main
   });
 
   const [expandedSections, setExpandedSections] = React.useState({
@@ -70,6 +84,10 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
     spacing: true,
     borders: true,
   });
+
+  // Use ref to track pending updates to debounce
+  const debounceTimerRef = React.useRef<NodeJS.Timeout>();
+  const pendingUpdatesRef = React.useRef<Partial<BuilderComponent>>({});
 
   React.useEffect(() => {
     if (component) {
@@ -92,29 +110,37 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
         borderColor: props.borderColor || "#000000",
         borderWidth: props.borderWidth ? String(props.borderWidth) : "0",
       });
+
+      // Initialize units from component
+      setSizingUnits({
+        width: component.widthUnit || "%",
+        height: component.heightUnit || "px",
+        fontSize: component.fontSizeUnit || "px",
+      });
     }
-  }, [component]);
+  }, [component?.id]); // Only update when component ID changes
 
-  const handleStyleChange = (key: keyof StyleState, value: string) => {
-    setStyles((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+  const handleStyleChange = React.useCallback(
+    (key: keyof StyleState, value: string) => {
+      // Update local state immediately for responsive UI
+      setStyles((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
 
-    // Update the component with the new style
-    const updates: any = {};
-    if (
-      key === "backgroundColor" ||
-      key === "textColor" ||
-      key === "borderColor"
-    ) {
-      updates[key] = value;
-    } else {
-      updates[key] = isNaN(Number(value)) ? value : Number(value);
-    }
-    onUpdate(updates);
-  };
+      // Prepare the update for the parent
+      const updates: any = {};
+      if (
+        key === "backgroundColor" ||
+        key === "textColor" ||
+        key === "borderColor"
+      ) {
+        updates[key] = value;
+      } else {
+        updates[key] = isNaN(Number(value)) ? value : Number(value);
+      }
 
+<<<<<<< ai_main_4b439789f712
   const handleGroupPaddingToggle = () => {
     setSpacing((prev) => ({
       ...prev,
@@ -135,30 +161,29 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
       [section]: !prev[section],
     }));
   };
+=======
+      // Store in pending updates
+      pendingUpdatesRef.current = {
+        ...pendingUpdatesRef.current,
+        ...updates,
+      };
+>>>>>>> main
 
-  const SectionHeader = ({
-    title,
-    section,
-  }: {
-    title: string;
-    section: keyof typeof expandedSections;
-  }) => (
-    <button
-      onClick={() => toggleSection(section)}
-      className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-200 hover:bg-gray-100 transition-colors group"
-    >
-      <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-        {title}
-      </span>
-      <ChevronDown
-        className={cn(
-          "w-4 h-4 text-gray-400 transition-transform",
-          expandedSections[section] && "rotate-180"
-        )}
-      />
-    </button>
+      // Clear existing debounce timer
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      // Debounce the update call to prevent parent re-renders while typing
+      debounceTimerRef.current = setTimeout(() => {
+        onUpdate(pendingUpdatesRef.current);
+        pendingUpdatesRef.current = {};
+      }, 300); // 300ms debounce
+    },
+    [onUpdate]
   );
 
+<<<<<<< ai_main_4b439789f712
   const StyleInput = ({
     label,
     value,
@@ -313,6 +338,190 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
       </div>
     );
   };
+=======
+  React.useEffect(() => {
+    // Cleanup debounce timer on unmount
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleUnitChange = React.useCallback(
+    (property: keyof SizingUnits, newUnit: "%" | "px") => {
+      setSizingUnits((prev) => ({
+        ...prev,
+        [property]: newUnit,
+      }));
+
+      // Update the component with the unit
+      const updates: any = {};
+      updates[`${property}Unit`] = newUnit; // Store the unit (widthUnit, heightUnit, fontSizeUnit)
+      onUpdate(updates);
+    },
+    [onUpdate]
+  );
+
+  const toggleSection = React.useCallback(
+    (section: keyof typeof expandedSections) => {
+      setExpandedSections((prev) => ({
+        ...prev,
+        [section]: !prev[section],
+      }));
+    },
+    []
+  );
+
+  const SectionHeader = React.useMemo(
+    () =>
+      ({
+        title,
+        section,
+      }: {
+        title: string;
+        section: keyof typeof expandedSections;
+      }) =>
+        (
+          <button
+            onClick={() => toggleSection(section)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-200 hover:bg-gray-100 transition-colors group"
+          >
+            <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+              {title}
+            </span>
+            <ChevronDown
+              className={cn(
+                "w-4 h-4 text-gray-400 transition-transform",
+                expandedSections[section] && "rotate-180"
+              )}
+            />
+          </button>
+        ),
+    [expandedSections, toggleSection]
+  );
+
+  const StyleInput = React.useMemo(
+    () =>
+      ({
+        label,
+        value,
+        onChange,
+        type = "text",
+        placeholder = "",
+      }: {
+        label: string;
+        value: string;
+        onChange: (value: string) => void;
+        type?: string;
+        placeholder?: string;
+      }) =>
+        (
+          <div className="space-y-2 px-4 py-3 border-b border-gray-100">
+            <label className="text-xs font-bold text-gray-700">{label}</label>
+            {type === "color" ? (
+              <div className="flex gap-2 items-center">
+                <input
+                  type="color"
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  onDragEnter={(e) => e.preventDefault()}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    onChange(e.dataTransfer.getData("text"));
+                  }}
+                  className="w-12 h-10 rounded-lg border border-gray-200 cursor-pointer hover:border-gray-300 transition-colors"
+                />
+                <Input
+                  type="text"
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  placeholder="#000000"
+                  className="flex-1 text-xs font-mono h-9"
+                />
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Input
+                  type={type}
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  placeholder={placeholder}
+                  className="h-9 text-sm"
+                />
+                {type === "number" && (
+                  <span className="text-xs text-gray-500">
+                    {label.includes("Font") ? "px" : label.includes("(") ? label.split("(")[1]?.slice(0, -1) : "px"}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        ),
+    []
+  );
+
+  const SizingInput = React.useMemo(
+    () =>
+      ({
+        label,
+        value,
+        onChange,
+        unit,
+        onUnitChange,
+        placeholder = "",
+        property = "height",
+      }: {
+        label: string;
+        value: string;
+        onChange: (value: string) => void;
+        unit: "%" | "px";
+        onUnitChange: (unit: "%" | "px") => void;
+        placeholder?: string;
+        property?: "width" | "height" | "fontSize";
+      }) => {
+        // For width and height in percentage, cap at 100
+        const isPercentageCapped =
+          (property === "width" || property === "height") && unit === "%";
+        const maxValue = isPercentageCapped ? 100 : undefined;
+        const displayValue =
+          isPercentageCapped && Number(value) > 100 ? "100" : value;
+
+        return (
+          <div className="space-y-2 px-4 py-3 border-b border-gray-100">
+            <label className="text-xs font-bold text-gray-700">{label}</label>
+            <div className="flex items-center gap-2">
+              <Input
+                type="number"
+                value={displayValue}
+                onChange={(e) => {
+                  let newValue = e.target.value;
+                  // Prevent width and height from exceeding 100 when unit is %
+                  if (isPercentageCapped && Number(newValue) > 100) {
+                    newValue = "100";
+                  }
+                  onChange(newValue);
+                }}
+                max={maxValue}
+                placeholder={placeholder}
+                className="h-9 text-sm flex-1"
+              />
+              <select
+                value={unit}
+                onChange={(e) => onUnitChange(e.target.value as "%" | "px")}
+                className="px-3 py-2 h-9 border border-gray-200 rounded-lg text-xs font-medium bg-white cursor-pointer hover:border-gray-300 transition-colors"
+              >
+                <option value="%">%</option>
+                <option value="px">px</option>
+              </select>
+            </div>
+          </div>
+        );
+      },
+    []
+  );
+>>>>>>> main
 
   if (!component) {
     return (
@@ -390,30 +599,45 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
           <SectionHeader title="Sizing" section="sizing" />
           {expandedSections.sizing && (
             <>
-              <StyleInput
-                label="Width (%)"
+              <SizingInput
+                label="Width"
                 value={styles.width}
                 onChange={(value) => handleStyleChange("width", value)}
-                type="number"
+                unit={sizingUnits.width}
+                onUnitChange={(unit) => handleUnitChange("width", unit)}
                 placeholder="100"
+<<<<<<< ai_main_4b439789f712
                 max={100}
                 isPercentage={true}
+=======
+                property="width"
+>>>>>>> main
               />
-              <StyleInput
-                label="Height (px)"
+              <SizingInput
+                label="Height"
                 value={styles.height}
                 onChange={(value) => handleStyleChange("height", value)}
-                type="number"
+                unit={sizingUnits.height}
+                onUnitChange={(unit) => handleUnitChange("height", unit)}
                 placeholder="auto"
+<<<<<<< ai_main_4b439789f712
                 max={999}
+=======
+                property="height"
+>>>>>>> main
               />
-              <StyleInput
-                label="Font Size (px)"
+              <SizingInput
+                label="Font Size"
                 value={styles.fontSize}
                 onChange={(value) => handleStyleChange("fontSize", value)}
-                type="number"
+                unit={sizingUnits.fontSize}
+                onUnitChange={(unit) => handleUnitChange("fontSize", unit)}
                 placeholder="16"
+<<<<<<< ai_main_4b439789f712
                 max={999}
+=======
+                property="fontSize"
+>>>>>>> main
               />
             </>
           )}
