@@ -42,55 +42,6 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
   parentId,
   parentIndex,
 }) => {
-  const getComponentStyles = () => {
-    const props = component.props || {};
-    const styles: React.CSSProperties = {};
-
-    // Padding
-    if (props.paddingTop || props.paddingRight || props.paddingBottom || props.paddingLeft) {
-      styles.paddingTop = props.paddingTop ? `${props.paddingTop}px` : undefined;
-      styles.paddingRight = props.paddingRight ? `${props.paddingRight}px` : undefined;
-      styles.paddingBottom = props.paddingBottom ? `${props.paddingBottom}px` : undefined;
-      styles.paddingLeft = props.paddingLeft ? `${props.paddingLeft}px` : undefined;
-    }
-
-    // Margin
-    if (props.marginTop || props.marginRight || props.marginBottom || props.marginLeft) {
-      styles.marginTop = props.marginTop ? `${props.marginTop}px` : undefined;
-      styles.marginRight = props.marginRight ? `${props.marginRight}px` : undefined;
-      styles.marginBottom = props.marginBottom ? `${props.marginBottom}px` : undefined;
-      styles.marginLeft = props.marginLeft ? `${props.marginLeft}px` : undefined;
-    }
-
-    // Colors
-    if (props.backgroundColor) {
-      styles.backgroundColor = props.backgroundColor;
-    }
-    if (props.textColor) {
-      styles.color = props.textColor;
-    }
-
-    // Border
-    if (props.borderWidth) {
-      styles.borderWidth = `${props.borderWidth}px`;
-      styles.borderStyle = "solid";
-      styles.borderColor = props.borderColor || "#000000";
-    }
-
-    // Border Radius
-    if (props.borderRadius) {
-      styles.borderRadius = `${props.borderRadius}px`;
-    }
-
-    // Font Size
-    if (props.fontSize) {
-      styles.fontSize = `${props.fontSize}px`;
-    }
-
-    return styles;
-  };
-
-  const componentStyles = getComponentStyles();
 
   const handleCopyComponent = () => {
     onDuplicate(component.id);
