@@ -28,6 +28,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const [selectedElementId, setSelectedElementId] = React.useState<string | null>(null);
   const [hoveredElementId, setHoveredElementId] = React.useState<string | null>(null);
+  const [clipboardData, setClipboardData] = React.useState<{ elementId: string; content: string } | null>(null);
 
   // Define hero elements
   const heroElements: HeroElement[] = [
@@ -97,7 +98,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   const handleCopyElement = (elementId: string, content: string) => {
-    navigator.clipboard.writeText(content);
+    // Store in local clipboard state
+    setClipboardData({ elementId, content });
+
+    // Also copy to browser clipboard
+    navigator.clipboard.writeText(content).then(() => {
+      console.log("Copied to clipboard:", content);
+    }).catch(err => {
+      console.error("Failed to copy:", err);
+    });
   };
 
   const handleDeleteElement = (elementId: string) => {
@@ -118,6 +127,44 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     if (key && defaultContent[elementId]) {
       onUpdate(component.id, { [key]: defaultContent[elementId] });
       setSelectedElementId(null);
+      console.log("Element reset to default:", defaultContent[elementId]);
+    }
+  };
+
+  const handleAddElement = (elementId: string, content: string) => {
+    // Paste clipboard content or duplicate current element
+    if (clipboardData) {
+      // If clipboard has data, paste it
+      const updateMap: Record<string, keyof BuilderComponent> = {
+        badge: "heroBadgeText",
+        heading: "heroHeadingText",
+        paragraph: "heroDescriptionText",
+      };
+
+      const sourceKey = updateMap[clipboardData.elementId];
+      const targetKey = updateMap[elementId];
+
+      if (sourceKey && targetKey) {
+        onUpdate(component.id, { [targetKey]: clipboardData.content });
+        console.log("Pasted content:", clipboardData.content);
+        setClipboardData(null);
+      }
+    } else {
+      // Otherwise duplicate the current element
+      const element = heroElements.find(e => e.id === elementId);
+      if (element) {
+        const updateMap: Record<string, keyof BuilderComponent> = {
+          badge: "heroBadgeText",
+          heading: "heroHeadingText",
+          paragraph: "heroDescriptionText",
+        };
+
+        const key = updateMap[elementId];
+        if (key) {
+          onUpdate(component.id, { [key]: content });
+          console.log("Duplicated element:", content);
+        }
+      }
     }
   };
 
@@ -150,7 +197,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               e.stopPropagation();
               handleCopyElement(element.id, element.content);
             }}
-            title="Copy element"
+            title={`Copy element (${clipboardData ? "has clipboard data" : "empty"})`}
           >
             <Copy className="h-3.5 w-3.5" />
           </Button>
@@ -160,9 +207,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="h-6 w-6 hover:bg-valasys-orange/10"
             onClick={(e) => {
               e.stopPropagation();
-              // Add functionality - can be expanded later
+              handleAddElement(element.id, element.content);
             }}
-            title="Add element"
+            title={clipboardData ? "Paste content" : "Duplicate element"}
           >
             <Plus className="h-3.5 w-3.5" />
           </Button>
@@ -174,7 +221,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               e.stopPropagation();
               handleDeleteElement(element.id);
             }}
-            title="Reset element"
+            title="Reset element to default"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
