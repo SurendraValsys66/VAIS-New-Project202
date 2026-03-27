@@ -435,12 +435,14 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
     case "button": {
       const buttonRef = React.useRef<HTMLButtonElement>(null);
       const isFocusedRef = React.useRef(false);
+      const isDefaultTextRef = React.useRef(false);
 
       React.useEffect(() => {
         if (buttonRef.current && !isFocusedRef.current) {
           const newText = component.contentText || "Get Started";
           if (buttonRef.current.textContent !== newText) {
             buttonRef.current.textContent = newText;
+            isDefaultTextRef.current = !component.contentText;
           }
         }
       }, [component.contentText]);
@@ -451,14 +453,12 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
             ref={buttonRef}
             contentEditable
             suppressContentEditableWarning
-            onMouseDown={(e) => {
-              // Clear the text as soon as user clicks
-              if (e.currentTarget.textContent === "Get Started" && !component.contentText) {
-                e.currentTarget.textContent = "";
-              }
-            }}
             onFocus={(e) => {
               isFocusedRef.current = true;
+              // Clear default text when user focuses
+              if (isDefaultTextRef.current && e.currentTarget.textContent === "Get Started") {
+                e.currentTarget.textContent = "";
+              }
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -468,6 +468,7 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
             }}
             onInput={(e) => {
               const text = e.currentTarget.textContent || "";
+              isDefaultTextRef.current = false;
               onUpdate(component.id, { contentText: text });
             }}
             onBlur={(e) => {
@@ -475,7 +476,10 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
               const text = e.currentTarget.textContent || "";
               if (!text) {
                 e.currentTarget.textContent = "Get Started";
+                isDefaultTextRef.current = true;
                 onUpdate(component.id, { contentText: "" });
+              } else {
+                isDefaultTextRef.current = false;
               }
             }}
             className="px-8 py-6 text-lg font-semibold rounded-xl shadow-lg focus:outline-none focus:ring-0"
