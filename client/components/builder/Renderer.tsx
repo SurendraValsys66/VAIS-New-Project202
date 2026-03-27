@@ -438,9 +438,8 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
           <button
             contentEditable
             suppressContentEditableWarning
-            onMouseDown={(e) => {
-              // Prevent selection issues on click
-              e.preventDefault();
+            onDoubleClick={(e) => {
+              e.stopPropagation();
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
