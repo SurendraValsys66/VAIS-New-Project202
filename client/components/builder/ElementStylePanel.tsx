@@ -44,6 +44,7 @@ interface StyleState {
   displayConditions: string[];
   imageUrl: string;
   altText: string;
+  videoUrl: string;
 }
 
 interface SpacingState {
@@ -100,6 +101,7 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
     displayConditions: [],
     imageUrl: "",
     altText: "",
+    videoUrl: "",
   });
 
   const [spacing, setSpacing] = React.useState<SpacingState>({
@@ -221,6 +223,7 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
         displayConditions: component.displayConditions || props.displayConditions || [],
         imageUrl: component.imageUrl || props.imageUrl || "",
         altText: component.altText || props.altText || "",
+        videoUrl: component.videoUrl || props.videoUrl || "",
       });
 
       // Initialize units from component
@@ -561,42 +564,62 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
           </div>
         )}
 
-        {/* Image Section - for image components */}
-        {component.type === "image" && (
+        {/* Media Section - for image and video components */}
+        {(component.type === "image" || component.type === "video") && (
           <div>
-            <SectionHeader title="Image" section="content" />
+            <SectionHeader title={component.type === "image" ? "Image" : "Video"} section="content" />
             {expandedSections.content && (
               <div className="px-4 py-3 space-y-3 bg-gray-50 border-b border-gray-200">
-                <div>
-                  <label className="text-xs font-semibold text-gray-700 block mb-2">Image URL</label>
-                  <Input
-                    type="text"
-                    value={styles.imageUrl}
-                    onChange={(e) => {
-                      handleStyleChange("imageUrl", e.target.value);
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-gray-700 block mb-2">Alt Text</label>
-                  <Input
-                    type="text"
-                    value={styles.altText}
-                    onChange={(e) => {
-                      handleStyleChange("altText", e.target.value);
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Description of the image"
-                  />
-                </div>
-                <button
-                  onClick={openImageDialog}
-                  className="w-full px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  Add Image
-                </button>
+                {component.type === "image" ? (
+                  <>
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700 block mb-2">Image URL</label>
+                      <Input
+                        type="text"
+                        value={styles.imageUrl}
+                        onChange={(e) => {
+                          handleStyleChange("imageUrl", e.target.value);
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="https://example.com/image.jpg"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700 block mb-2">Alt Text</label>
+                      <Input
+                        type="text"
+                        value={styles.altText}
+                        onChange={(e) => {
+                          handleStyleChange("altText", e.target.value);
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Description of the image"
+                      />
+                    </div>
+                    <button
+                      onClick={openImageDialog}
+                      className="w-full px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      Add Image
+                    </button>
+                  </>
+                ) : (
+                  <div>
+                    <label className="text-xs font-semibold text-gray-700 block mb-2">Video URL</label>
+                    <Input
+                      type="text"
+                      value={styles.videoUrl}
+                      onChange={(e) => {
+                        handleStyleChange("videoUrl", e.target.value);
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="https://example.com/video.mp4"
+                    />
+                    <p className="mt-2 text-[11px] text-gray-500">
+                      Use a direct video file URL for the HTML video element.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

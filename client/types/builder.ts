@@ -64,6 +64,8 @@ export interface BuilderComponent {
   // Image component properties
   imageUrl?: string;
   altText?: string;
+  // Video component properties
+  videoUrl?: string;
   // Text content
   contentText?: string;
 }
